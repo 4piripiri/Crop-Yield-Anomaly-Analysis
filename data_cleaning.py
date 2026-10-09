@@ -1,63 +1,36 @@
-"""
-data_cleaning.py
-
-Responsible for: handling missing values, duplicates, and outliers.
-Rubric criterion covered: Data Cleaning & Manipulation (NumPy/Pandas).
-"""
-
 import pandas as pd
-import numpy as np
 
+# 1. Load the original CSV
+df = pd.read_csv("data/raw/Custom_Crops_yield_Historical_Dataset.csv")
+print("Data loaded successfully.")
 
-def drop_duplicates(df: pd.DataFrame) -> pd.DataFrame:
-    """Remove exact duplicate rows. Print how many were dropped for the report."""
-    before = len(df)
-    df = df.drop_duplicates()
-    print(f"Dropped {before - len(df)} duplicate rows")
-    return df
+# 2. Inspect dimensions and data types
+print("Shape:", df.shape)
+print("Data Types:\n", df.dtypes)
 
+# 3. Check and remove duplicate rows
+duplicates = df.duplicated().sum()
+print(f"Found {duplicates} duplicate rows. Removing them...")
+df = df.drop_duplicates()
 
-def handle_missing_values(df: pd.DataFrame, strategy: str = "median") -> pd.DataFrame:
-    """
-    Fill or drop missing values.
+# 4. Handle missing values
+# Filling missing weather data with the column mean (average)
+if "Average_Rainfall" in df.columns:
+    df["Average_Rainfall"] = df["Average_Rainfall"].fillna(df["Average_Rainfall"].mean())
+if "Mean_Temperature" in df.columns:
+    df["Mean_Temperature"] = df["Mean_Temperature"].fillna(df["Mean_Temperature"].mean())
 
-    TODO: decide per-column whether to fill (e.g. fillna with median/mean for
-    rainfall/temperature) or drop rows (e.g. if 'yield' itself is missing —
-    you probably can't impute the target variable).
+# Dropping rows where Production or Area is missing, since we need them for Yield
+df = df.dropna(subset=["Production", "Area"])
 
-    Args:
-        df: input DataFrame
-        strategy: "median", "mean", or "drop"
-    """
-    # TODO: implement. Example starting point:
-    # numeric_cols = df.select_dtypes(include=[np.number]).columns
-    # if strategy == "drop":
-    #     df = df.dropna(subset=numeric_cols)
-    # else:
-    #     df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].agg(strategy))
-    raise NotImplementedError("Fill in missing value strategy")
+# 5. Correct inconsistent category names (makes everything Title Case)
+df["State_Name"] = df["State_Name"].str.strip().str.title()
+df["Crop"] = df["Crop"].str.strip().str.title()
 
+# 6. Create a useful derived column: Yield (Production per Area)
+df["Yield"] = df["Production"] / df["Area"]
+print("Created 'Yield' column.")
 
-def remove_outliers_iqr(df: pd.DataFrame, column: str) -> pd.DataFrame:
-    """
-    Remove outliers in `column` using the IQR method (rows outside
-    Q1 - 1.5*IQR to Q3 + 1.5*IQR are dropped).
-
-    Useful for rainfall/temperature columns that may have sensor errors.
-    """
-    q1 = df[column].quantile(0.25)
-    q3 = df[column].quantile(0.75)
-    iqr = q3 - q1
-    lower, upper = q1 - 1.5 * iqr, q3 + 1.5 * iqr
-    mask = df[column].between(lower, upper)
-    print(f"{column}: removed {(~mask).sum()} outlier rows (bounds: {lower:.2f} to {upper:.2f})")
-    return df[mask]
-
-
-def clean_pipeline(df: pd.DataFrame) -> pd.DataFrame:
-    """Run the full cleaning pipeline in sequence. Wire up your functions here."""
-    df = drop_duplicates(df)
-    # df = handle_missing_values(df)
-    # df = remove_outliers_iqr(df, "rainfall")
-    # df = remove_outliers_iqr(df, "temperature")
-    return df
+# 7. Export the cleaned dataset
+df.to_csv("data/processed/cleaned_crop_data.csv", index=False)
+print("Cleaned data saved to data/processed/cleaned_crop_data.csv")
