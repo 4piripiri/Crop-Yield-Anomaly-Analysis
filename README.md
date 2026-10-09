@@ -7,20 +7,17 @@
 ## Project Structure
 
 ```
+## Project Structure
+
 crop-yield-capstone/
-├── data/
-│   ├── raw/            # original Kaggle CSV(s) go here (gitignored)
-│   └── processed/      # cleaned data saved here after running the pipeline
-├── src/
-│   ├── data_loader.py       # load raw data
-│   ├── data_cleaning.py     # handle missing values, duplicates, outliers
-│   ├── visualization.py     # matplotlib/seaborn charts
-│   ├── stats_analysis.py    # anomaly detection + correlation/forecasting (scipy/statsmodels)
-│   └── report_generator.py  # writes findings to outputs/reports
-├── outputs/
-│   ├── figures/         # saved charts
-│   └── reports/         # final written report
-├── main.py              # runs the full pipeline end-to-end
+├── Custom_Crops_yield_Historical_Dataset.csv  # Raw data (gitignored)
+├── cleaned_crop_data.csv                      # Cleaned data (gitignored)
+├── data_loader.py                             # load raw data
+├── data_cleaning.py                           # handle missing values, duplicates
+├── visualization.py                           # matplotlib/seaborn charts
+├── stats_analysis.py                          # anomaly detection
+├── report_generator.py                        # writes findings
+├── main.py                                    # runs the full pipeline
 ├── requirements.txt
 └── README.md
 ```
