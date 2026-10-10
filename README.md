@@ -4,20 +4,26 @@
 **Problem Statement:** Identify unusually poor crop-yield years and determine whether rainfall, temperature, or other environmental factors contributed to the decline.
 **Dataset:** [Indian Historical Crop Yield and Weather Data](https://www.kaggle.com/datasets/zoya77/indian-historical-crop-yield-and-weather-data/data) (Kaggle, zoya77)
 
+## Dataset Description
+
+* **Size:** [N] records, [N] columns
+* **Time span:** [start year] to [end year]
+* **Coverage:** [N] states/districts and [N] crops
+* **Target variable:** [yield column name] ([unit])
+* **Environmental variables:** [rainfall column] ([unit]), [temperature column] ([unit]), [other columns, e.g. humidity, fertilizer, area]
+* **Data quality notes:** [e.g. "X% missing values in column Y, handled in data_cleaning.py"]
+* **Definition of "unusually poor":** a year whose yield z-score falls below [threshold, e.g. -1.5] relative to the mean.
+
 ## Project Structure
 
-```
-## Project Structure
-
+```text
 crop-yield-capstone/
 ├── Custom_Crops_yield_Historical_Dataset.csv  # Raw data (gitignored)
 ├── cleaned_crop_data.csv                      # Cleaned data (gitignored)
-├── data_loader.py                             # load raw data
-├── data_cleaning.py                           # handle missing values, duplicates
+├── data_cleaning.py                           # load data, handle missing values, duplicates
 ├── visualization.py                           # matplotlib/seaborn charts
-├── stats_analysis.py                          # anomaly detection
+├── stats_analysis.py                          # anomaly detection & correlation
 ├── report_generator.py                        # writes findings
-├── main.py                                    # runs the full pipeline
 ├── requirements.txt
 └── README.md
 ```
@@ -30,28 +36,27 @@ source venv/bin/activate    # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Download the dataset from Kaggle and place the CSV(s) in `data/raw/`.
+Download the dataset from Kaggle and place the raw CSV file (`Custom_Crops_yield_Historical_Dataset.csv`) directly into this main project folder.
 
-## Running
+## Running the Pipeline
+
+Since we are using a flat script structure for clarity, run the modules individually in sequence:
 
 ```bash
-python main.py
+python data_cleaning.py
+python visualization.py
+python stats_analysis.py
+python report_generator.py
 ```
 
-## Team Split (suggested)
-
-- **Person A** — `data_loader.py` + `data_cleaning.py` (Problem Definition, Data Cleaning criteria)
-- **Person B** — `visualization.py` (Data Visualization criterion)
-- **Person C** — `stats_analysis.py` (Statistical Analysis / Forecasting criterion)
-- **Everyone** — `report_generator.py` + README + viva prep (Report Quality, Viva criteria)
 
 ## Rubric Coverage
 
 | Criterion | Where it's addressed |
-|---|---|
-| Problem Definition & Dataset Selection | README + `data_loader.py` docstring |
-| Code Structure & Modularity | `src/` package, one responsibility per module |
+| --- | --- |
+| Problem Definition & Dataset Selection | README + `data_cleaning.py` initial outputs |
+| Code Structure & Modularity | Flat modular structure, one responsibility per file |
 | Data Cleaning (NumPy/Pandas) | `data_cleaning.py` |
 | Data Visualization (Matplotlib/Seaborn) | `visualization.py` |
 | Statistical Analysis / Forecasting (SciPy/Statsmodels) | `stats_analysis.py` |
-| Report Quality & Interpretation | `report_generator.py`, `outputs/reports/` |
+| Report Quality & Interpretation | `report_generator.py` |
