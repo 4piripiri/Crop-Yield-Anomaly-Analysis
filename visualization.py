@@ -3,16 +3,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 df = pd.read_csv("Custom_Crops_yield_Historical_Dataset.csv")
-
 sns.set_theme(style="whitegrid")
-
-# ============================================================
-# FIGURE 1: CROP YIELD TRENDS
-# ============================================================
 
 fig1, axes = plt.subplots(2, 1, figsize=(20, 14))
 
-# Graph 1: Annual Average Yield Trend by Crop
+#Annual Average Yield Trend by Crop
 yearly_crop_yield = df.groupby(
     ['Year', 'Crop']
 )['Yield_kg_per_ha'].mean().reset_index()
@@ -36,7 +31,7 @@ axes[0].set_xlabel('Year')
 axes[0].tick_params(axis='x', labelsize=8, rotation=0)
 
 
-# Graph 2: Identification of Poor-Yield Years
+#Identification of Poor-Yield Years
 yearly_national = df.groupby(
     'Year'
 )['Yield_kg_per_ha'].mean().reset_index()
