@@ -5,11 +5,10 @@ Update the placeholder column names below once you've inspected the actual
 Kaggle CSV (run data_loader.inspect_data() first to see real column names).
 """
 
-from src.data_loader import load_raw_data, inspect_data
-from src.data_cleaning import clean_pipeline
-from src.visualization import plot_yield_over_time, plot_yield_vs_factor, plot_correlation_heatmap
-from src.stats_analysis import detect_anomaly_years, correlate_yield_with_factor, compare_anomaly_vs_normal_years
-from src.report_generator import generate_report
+from data_cleaning import clean_pipeline
+from visualization import plot_yield_over_time, plot_yield_vs_factor, plot_correlation_heatmap
+from stats_analysis import detect_anomaly_years, correlate_yield_with_factor, compare_anomaly_vs_normal_years
+from report_generator import generate_report
 
 # TODO: replace with the actual filename you place in data/raw/
 RAW_FILENAME = "crop_yield_weather.csv"
