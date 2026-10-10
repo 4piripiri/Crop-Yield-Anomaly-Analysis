@@ -1,11 +1,11 @@
 """
 stats_analysis.py
 
-Responsible for: (1) flagging unusually poor yield years, (2) testing whether
+flagging unusually poor yield years,testing whether
 rainfall/temperature explain those dips.
-Rubric criterion covered: Statistical Analysis / Forecasting (SciPy/Statsmodels).
+Statistical Analysis / Forecasting (SciPy/Statsmodels).
 """
-
+'''
 import pandas as pd
 import numpy as np
 from scipy import stats
@@ -83,3 +83,4 @@ def forecast_yield(series: pd.Series, order: tuple = (1, 1, 1), steps: int = 3):
     what separates a "Good" from an "Excellent" on this rubric criterion.
     """
     raise NotImplementedError("Implement ARIMA forecasting with statsmodels")
+'''
