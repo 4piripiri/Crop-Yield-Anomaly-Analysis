@@ -74,10 +74,7 @@ fig1.tight_layout(pad=4.0, h_pad=4.0)
 plt.show()
 
 
-# ============================================================
 # FIGURE 2: YIELD VS ENVIRONMENTAL FACTORS
-# ============================================================
-
 fig2, axes = plt.subplots(2, 1, figsize=(20, 12))
 
 national_env = df.groupby('Year')[
@@ -85,7 +82,7 @@ national_env = df.groupby('Year')[
 ].mean().reset_index()
 
 
-# Graph 3: Yield vs Rainfall
+# Yield vs Rainfall
 ax1 = axes[0]
 ax1_twin = ax1.twinx()
 
@@ -123,7 +120,7 @@ ax1.legend(
 )
 
 
-# Graph 4: Yield vs Temperature
+#Yield vs Temperature
 ax2 = axes[1]
 ax2_twin = ax2.twinx()
 
@@ -163,15 +160,11 @@ ax2.legend(
 fig2.tight_layout(pad=4.0, h_pad=4.0)
 plt.show()
 
-
-# ============================================================
 # FIGURE 3: ENVIRONMENTAL ANALYSIS
-# ============================================================
-
 fig3, axes = plt.subplots(1, 2, figsize=(20, 8))
 
 
-# Graph 5: Rainfall Comparison Across Crop Yield Categories
+#Rainfall Comparison Across Crop Yield Categories
 df['Yield_Status'] = df.groupby(
     'Crop'
 )['Yield_kg_per_ha'].transform(
@@ -213,7 +206,7 @@ axes[0].tick_params(axis='x', labelsize=9, rotation=0)
 axes[0].legend(title='Yield Category', loc='best')
 
 
-# Graph 6: Correlation Matrix
+#Correlation Matrix
 env_cols = [
     'Yield_kg_per_ha',
     'Rainfall_mm',
