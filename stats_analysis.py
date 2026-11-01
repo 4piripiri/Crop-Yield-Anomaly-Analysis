@@ -15,13 +15,13 @@ from statsmodels.tsa.arima.model import ARIMA
 df = pd.read_csv("cleaned_crop_data.csv")
 crop = sys.argv[1] if len(sys.argv) > 1 else df["Crop"].value_counts().index[0]
 df = df[df["Crop"] == crop]
-print("Crop:", crop)
+print("1. Crop:", crop)
 
 cols = ["Yield_kg_per_ha", "Rainfall_mm", "Temperature_C"]
 data = df.groupby("Year")[cols].mean()
 data.columns = ["yield", "rain", "temp"]
 
-print("\nSTEP 2: Descriptive statistics")
+print("\n2: Descriptive statistics")
 print(data.describe().round(2))
 
 slope, intercept, r, p, se = stats.linregress(data.index, data["yield"])
@@ -32,20 +32,20 @@ data["anomaly"] = data["z"] < -1.5                   # unusually poor year
 if data["anomaly"].sum() < 3:                        # too few -> be less strict
     data["anomaly"] = data["z"] < -1.0
     print("(Used z < -1.0 because very few years were below -1.5)")
-print("\nSTEP 3: Poor-yield (anomaly) years")
+print("\n3: Poor-yield (anomaly) years")
 print(data[data["anomaly"]][["yield", "trend", "z"]].round(2))
 
-print("\nSTEP 4: Is the gap normally distributed? (Shapiro-Wilk)")
+print("\n4: Is the gap normally distributed? (Shapiro-Wilk)")
 w, p = stats.shapiro(data["gap"])
 print("p =", round(p, 3), "->", "normal" if p > 0.05 else "not normal")
 
-print("\nSTEP 5: Correlation of yield gap with weather (Pearson)")
+print("\n5: Correlation of yield gap with weather (Pearson)")
 for f in ["rain", "temp"]:
     r, p = stats.pearsonr(data["gap"], data[f])
     print(f, ": r =", round(r, 3), " p =", round(p, 4),
           "-> significant" if p < 0.05 else "-> not significant")
 
-print("\nSTEP 6: Weather in anomaly years vs normal years")
+print("\n6: Weather in anomaly years vs normal years")
 bad = data[data["anomaly"]]
 good = data[~data["anomaly"]]
 for f in ["rain", "temp"]:
@@ -64,7 +64,7 @@ if len(before) >= 3:
     t, p = stats.ttest_rel(now, before)
     print("Paired t-test (rain in bad year vs year before): p =", round(p, 4))
 
-print("\nSTEP 7: Split years into LOW / MEDIUM / HIGH rainfall")
+print("\n7: Split years into LOW / MEDIUM / HIGH rainfall")
 data["rain_group"] = pd.qcut(data["rain"], 3, labels=["low", "medium", "high"])
 print(data.groupby("rain_group", observed=True)["gap"].mean().round(1))
 groups = [g["gap"].values for _, g in data.groupby("rain_group", observed=True)]
@@ -76,18 +76,18 @@ table = pd.crosstab(data["anomaly"], data["rain_group"])
 chi2, p, dof, exp = stats.chi2_contingency(table)
 print("Chi-square: are anomaly years linked to rain group? p =", round(p, 4))
 
-print("\nSTEP 8: Regression  (yield gap ~ rain + temp)")
+print("\n8: Regression  (yield gap ~ rain + temp)")
 X = sm.add_constant(data[["rain", "temp"]])
 model = sm.OLS(data["gap"], X).fit()
 print("R-squared =", round(model.rsquared, 3), "(share of yield variation explained by weather)")
 print(model.pvalues.round(4))
 
-print("\nSTEP 9: Smoothing")
+print("\n9: Smoothing")
 data["SMA_3"] = data["yield"].rolling(3).mean()     
 data["EWMA"] = data["yield"].ewm(alpha=0.4).mean()   
 print(data[["yield", "SMA_3", "EWMA"]].tail(5).round(1))
 
-print("\nSTEP 10: Stationarity (ADF test)")
+print("\n10: Stationarity (ADF test)")
 p = adfuller(data["yield"])[1]
 print("Original series p =", round(p, 3), "->", "stationary" if p < 0.05 else "NOT stationary")
 d = 0
